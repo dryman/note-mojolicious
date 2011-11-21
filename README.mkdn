@@ -65,8 +65,9 @@ The param method of our Mojolicious::Controller instance is used to access
 * POST parameters  
 * route placeholders `/:name`
 
-    # param from post
+
     my $user = $self->param('user') || '';
+    # param from post
 
 
 ## helper method
