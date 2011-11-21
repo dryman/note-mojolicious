@@ -179,3 +179,65 @@ response has been generated_.
 There are a few stash values with special meaning, such as **controller** and
 **action**, but you can generally fill it with whatever data you need to generate a
 response. Once dispatched the whole stash content can be changed at any time.
+
+    $self->stash(mymessage);
+    # 'Bye'
+    $self->stash(mymessage => 'Welcome');
+    #Change message in stash
+
+## Nested routes
+It is also possible to build tree structures from routes to remove repetitive code. A route with children can't match on it's own though, only the actual endpoints of these nested routes can.
+
+    # /foo     -> undef
+    # /foo/bar -> {controller => 'foo', action => 'bar'}
+    my $foo = $r->route('/foo')->to(controller => 'foo');
+    $foo->route('/bar')->to(action => 'bar');
+The stash is simply inherited from route to route and newer values override old ones.
+
+    # /foo     -> undef
+    # /foo/abc -> undef
+    # /foo/bar -> {controller => 'foo', action => 'bar'}
+    # /foo/baz -> {controller => 'foo', action => 'baz'}
+    # /foo/cde -> {controller => 'foo', action => 'abc'}
+    my $foo = $r->route('/foo')->to(controller => 'foo', action => 'abc');
+    $foo->route('/bar')->to(action => 'bar');
+    $foo->route('/baz')->to(action => 'baz');
+    $foo->route('/cde');
+
+## Some convensions
+
+    # Foo->bye
+    $r->route('/bye')->to('foo#bye',mymessage => 'Bye');
+    # Foo::Bar->bye
+    $r->route('/bye')->to('foo-bar#bye',mymessage => 'Bye');
+    $r->route('/bye')
+      ->to(namesapce => 'Foo::Bar', action => 'bye');
+
+## Callback
+
+    $r->route('/bye')->to(cb => sub {
+        my $self = shift;
+        $self->render(text => 'Good bye.');
+      });
+## Placeholders and stash value
+
+    # /bye -> {controller => 'foo', action => 'bar', mymessage => 'bye'}
+    # /hey -> {controller => 'foo', action => 'bar', mymessage => 'hey'}
+    # / -> {controller => 'foo', action => 'bar', mymessage => 'hi'}
+    $r->route('/:mymessage')
+      ->to(controller => 'foo', action => 'bar', mymessage => 'hi');
+
+Extracted placeholder values will simply redefine older stash values if they
+already exist. One more interesting effect, if a placeholder is at the end of a
+route and there is already a stash value of the same name present, it
+automatically becomes optional.
+
+This is also the case if multiple placeholders are right after another and not
+separated by other characters than `/`.
+
+    # /           -> {controller => 'foo',   action => 'bar'}
+    # /users      -> {controller => 'users', action => 'bar'}
+    # /users/list -> {controller => 'users', action => 'list'}
+    $r->route('/:controller/:action')
+      ->to(controller => 'foo', action => 'bar');
+
