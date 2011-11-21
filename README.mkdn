@@ -71,25 +71,41 @@ to make our model available to all actions and templates.
 
     helper users => sub { return $users };
 
+## flash
+
+    # get message from flash
+    my $foo   = $c->flash('foo');
+    # store message into flash
+    $c        = $c->flash({foo => 'bar'});
+    $c        = $c->flash(foo => 'bar');
+    $c->redirect_to('next_action');
+Data storage persistent only for the next request, stored in the session.
+
 ## State keeping
-Sessions in Mojolicious pretty much just work out of the box and there is no setup required, but we suggest using a more secure secret passphrase.
+Sessions in Mojolicious pretty much just work out of the box and there is no
+setup required, but we suggest using a more secure secret passphrase.
 
     app->secret('Mojolicious rocks');
-This passphrase is used by the HMAC-MD5 algorithm to make signed cookies secure and can be changed at any time to invalidate all existing sessions.
+This passphrase is used by the HMAC-MD5 algorithm to make signed cookies secure
+and can be changed at any time to invalidate all existing sessions.
 
     $self->session(user => 'sri');
     my $user = $self->session('user');
-By default all sessions expire after one hour, for more control you can also use the expires session value to set the expiration date to a specific time in epoch seconds.
+By default all sessions expire after one hour, for more control you can also use
+the expires session value to set the expiration date to a specific time in epoch
+seconds.
 
     $self->session(expires => time + 3600);
 And the whole session can be deleted by setting an expiration date in the past.
 
     $self->session(expires => 1);
-For data that should only be visible on the next request, like a confirmation message after a 302 redirect, you can use the flash.
+For data that should only be visible on the next request, like a confirmation
+message after a 302 redirect, you can use the flash.
 
     $self->flash(message => 'Everything is fine.');
     $self->redirect_to('goodbye');
-Just remember that everything is stored in HMAC-MD5 signed cookies, so there is usually a 4096 byte limit, depending on the browser.
+Just remember that everything is stored in HMAC-MD5 signed cookies, so there is
+usually a 4096 byte limit, depending on the browser.
 
 
 # Test::Mojo
