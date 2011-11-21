@@ -1,0 +1,5 @@
+# Notes on mojolicous
+
+Just a reading note for Perl Mojolicous framework
+
+
