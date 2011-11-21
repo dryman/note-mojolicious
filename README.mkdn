@@ -86,6 +86,11 @@ to make our model available to all actions and templates.
     $c->redirect_to('next_action');
 Data storage persistent only for the next request, stored in the session.
 
+    % if (my $message = flash 'message') {
+      <b><%= $message %></b><br>
+    % }
+    # getting message out from flash command
+
 ## State keeping
 Sessions in Mojolicious pretty much just work out of the box and there is no
 setup required, but we suggest using a more secure secret passphrase.  This
