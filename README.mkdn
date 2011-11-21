@@ -59,11 +59,15 @@ The notes below are simply some snapshots jump into my head
 # Controller
 
 ## param method
-The param method of our Mojolicious::Controller instance is used to access **query
-parameters**, **POST parameters** and **route placeholders**, all at once.
+The param method of our Mojolicious::Controller instance is used to access 
+
+* query parameters `/?user=sir&passwd=secr3t`
+* POST parameters  
+* route placeholders `/:name`
 
     # param from post
     my $user = $self->param('user') || '';
+
 
 ## helper method
 A simple helper function can be registered with the helper method of Mojolicious
@@ -83,11 +87,9 @@ Data storage persistent only for the next request, stored in the session.
 
 ## State keeping
 Sessions in Mojolicious pretty much just work out of the box and there is no
-setup required, but we suggest using a more secure secret passphrase.
-
-    app->secret('Mojolicious rocks');
-This passphrase is used by the HMAC-MD5 algorithm to make signed cookies secure
-and can be changed at any time to invalidate all existing sessions.
+setup required, but we suggest using a more secure secret passphrase.  This
+passphrase is used by the HMAC-MD5 algorithm to make signed cookies secure and
+can be changed at any time to invalidate all existing sessions.
 
     $self->session(user => 'sri');
     my $user = $self->session('user');
