@@ -1,5 +1,51 @@
-# Notes on mojolicous
+# Notes on Mojolicous
 
 Just a reading note for Perl Mojolicous framework
 
+# Foundamentals of Modern Web Framework concerns
 
+## REpresentational State Transfer
+
+The fundamental idea here is that all resources are uniquely addressable with
+URLs and every resource can have different representations such as HTML, RSS or
+JSON. User interface concerns are separated from data storage concerns and all
+session state is kept client-side.
+
+    .---------.                        .------------.
+    |         | ->    PUT /foo      -> |            |
+    |         | ->    Hello world!  -> |            |
+    |         |                        |            |
+    |         | <-    201 CREATED   <- |            |
+    |         |                        |            |
+    |         | ->    GET /foo      -> |            |
+    | Browser |                        | Web Server |
+    |         | <-    200 OK        <- |            |
+    |         | <-    Hello world!  <- |            |
+    |         |                        |            |
+    |         | ->    DELETE /foo   -> |            |
+    |         |                        |            |
+    |         | <-    200 OK        <- |            |
+    '---------'                        '------------'
+
+## Sessions
+HTTP was designed as a stateless protocol, web servers don't know anything about
+previous requests, which makes user friendly login systems very tricky. Sessions
+solve this problem by allowing web applications to keep stateful information
+across several HTTP requests.
+
+    GET /login?user=sri&pass=s3cret HTTP/1.1
+      Host: mojolicio.us
+    
+      HTTP/1.1 200 OK
+      Set-Cookie: sessionid=987654321
+      Content-Length: 10
+      Hello sri.
+    
+      GET /protected HTTP/1.1
+      Host: mojolicio.us
+      Cookie: $Version=1; sessionid=987654321
+    
+      HTTP/1.1 200 OK
+      Set-Cookie: sessionid=987654321
+      Content-Length: 16
+      Hello again sri.
