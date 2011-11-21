@@ -4,6 +4,8 @@ Just a reading note for Perl Mojolicous framework
 
 # Foundamentals of Modern Web Framework concerns
 
+Most notes are copied from Mojolicous::Guides::Growing
+
 ## REpresentational State Transfer
 
 The fundamental idea here is that all resources are uniquely addressable with
@@ -49,3 +51,12 @@ across several HTTP requests.
       Set-Cookie: sessionid=987654321
       Content-Length: 16
       Hello again sri.
+
+* * *
+
+The notes below are simply some snapshots jump into my head
+
+# Controller
+
+The param method of our Mojolicious::Controller instance is used to access **query
+parameters**, **POST parameters** and **route placeholders**, all at once.
