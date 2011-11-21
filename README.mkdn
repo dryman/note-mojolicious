@@ -58,5 +58,15 @@ The notes below are simply some snapshots jump into my head
 
 # Controller
 
+## param method
 The param method of our Mojolicious::Controller instance is used to access **query
 parameters**, **POST parameters** and **route placeholders**, all at once.
+
+## helper method
+A simple helper function can be registered with the helper method of Mojolicious
+to make our model available to all actions and templates.
+
+    helper users => sub { return $users };
+
+
+
