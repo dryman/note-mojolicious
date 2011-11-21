@@ -126,3 +126,56 @@ usually a 4096 byte limit, depending on the browser.
       # Test login with valid credentials
       $t->post_form_ok('/' => {user => 'sri', pass => 'secr3t'})
         ->status_is(200)->text_like('html body' => qr/Welcome sri/);
+
+# Routing
+
+* Generic placeholders
+
+Generic placeholders are the simplest form of placeholders and match all
+characters except `/` and `.`.
+
+    /sebastian/hello    -> /:name/hello -> {name => 'sebastian'}
+    /sebastianhello    -> /(:name)hello -> {name => 'sebastian'}
+
+* Wildcard placeholders
+
+Wildcard placeholders are just like generic placeholders, but match absolutely
+everything.
+
+    /sebastian/23/hello -> /*name/hello -> {name => 'sebastian/23'}
+    /sebastian.23/hello -> /*name/hello -> {name => 'sebastian.23'}
+    /sebastian/hello    -> /*name/hello -> {name => 'sebastian'}
+
+* Relaxed placeholders
+
+Relaxed placeholders are similar to the two placeholders above, but always
+require parentheses and match all characters except `/`.
+
+    /sebastian/23/hello -> /(.name)/hello -> undef
+    /sebastian.23/hello -> /(.name)/hello -> {name => 'sebastian.23'}
+
+## basic routing
+Routes are usually configured in the startup method of the application class,
+but the router **can be accessed from everywhere** (even at runtime).
+
+    sub startup {
+       my $self = shift;
+       my $r = $self->routes;
+       $r->route('/welcome')->to(controller => 'foo', action => 'welcome');
+     }
+
+## Stash
+
+The generated hash of a matching route is actually the center of the whole
+Mojolicious request cycle. We call it the stash, and it _persists until a
+response has been generated_.
+
+    $r->route('/bye')->to(
+      controller => 'foo', 
+      action => 'bye',
+      mymessage => 'Bye'
+    );
+
+There are a few stash values with special meaning, such as **controller** and
+**action**, but you can generally fill it with whatever data you need to generate a
+response. Once dispatched the whole stash content can be changed at any time.
